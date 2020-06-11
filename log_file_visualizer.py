@@ -3,11 +3,15 @@ from matplotlib import style
 from tkinter import filedialog
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import rc,rcParams
+from pylab import *
+
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from tkinter.ttk import *
+from time import strftime 
 
 
 LARGE_FONT= ("Helvetica", 18)
@@ -44,9 +48,184 @@ class iFapp(tk.Tk):
         tk.Tk.iconbitmap(self, default="ideaforge.ico")
         tk.Tk.wm_title(self, "Log File Analysis System")
         
+        my_menu = Menu(self)
+        param_menu = Menu(self, tearoff = False)
+        phi_menu = Menu(self, tearoff = False)
+        the_menu = Menu(self, tearoff = False)
+        psi_menu = Menu(self, tearoff = False)
+        cont_psi_menu = Menu(self, tearoff = False)
+        alt_menu = Menu(self, tearoff = False)
+        throttle_menu = Menu(self, tearoff = False)
+        voltage_menu = Menu(self, tearoff = False)
+        gps_sat_menu = Menu(self, tearoff = False)
+        gps_hdop_menu = Menu(self, tearoff = False)
+        motor_menu = Menu(self, tearoff = False)
+        mag_menu = Menu(self, tearoff = False)
+        iaz_menu = Menu(self, tearoff = False)
+
+        #param_menu = Menu(param_menu, tearoff = False)
+
+        self.config(menu = my_menu)
+        
+        global phi_min, phi_max, phi_overlapp, the_max, the_min, the_overlapp, psi_max, psi_min, psi_overlapp, cont_psi_average,alt_overlapp, throttle_max, voltage_max, gps_min, gps_hdop_max, motor_overlapp, mag_min, mag_max, iaz_max
+
+        phi_min = -16
+        phi_max = 16
+        phi_overlapp = 5
+        the_min = -16
+        the_max = 16
+        the_overlapp = 5
+        psi_min = -100
+        psi_max = 100
+        psi_overlapp = 5
+        cont_psi_average = 100
+        alt_overlapp = 10
+        throttle_max = 90
+        voltage_max = 10
+        gps_min = 10
+        gps_hdop_max = 1 
+        motor_overlapp = 10
+        mag_min = 60
+        mag_max = 100
+        iaz_max = 5
+
+        def phi_min_txt():
+            global phi_min
+            phi_min = simpledialog.askfloat("min value", "set value" )
+           
+        def the_min_txt():
+            global the_min
+            the_min = simpledialog.askfloat("min value", "set value" )
+            
+        def psi_min_txt():
+            global psi_min
+            psi_min = simpledialog.askfloat("min value", "set value" )
+            
+        def phi_max_txt():
+            global phi_max
+            phi_max = simpledialog.askfloat("max value", " set value")
+
+        def the_max_txt():
+            global the_max
+            the_max = simpledialog.askfloat("max value", " set value")
+
+        def psi_max_txt():
+            global psi_max
+            psi_max = simpledialog.askfloat("max value", " set value")
+            
+
+        def phi_overlapp_txt():
+            global phi_overlapp
+            phi_overlapp = simpledialog.askfloat("overlapp parameter", "set value")
+            
+
+        def the_overlapp_txt():
+            global the_overlapp
+            the_overlapp = simpledialog.askfloat("overlapp parameter", "set value")
+            
+
+        def psi_overlapp_txt():
+            global psi_overlapp
+            psi_overlapp = simpledialog.askfloat("overlapp parameter", "set value")
+            
+
+        def cont_psi_average_txt():
+            global cont_psi_average
+            cont_psi_average = simpledialog.askfloat("Controller Psi average value", " set value")
+
+        def alt_overlapp_txt():
+            global alt_overlapp
+            alt_overlapp = simpledialog.askfloat("overlapp parameter", "set value")
+
+        def throttle_max_txt():
+            global throttle_max
+            throttle_max = simpledialog.askfloat("max value", " set value")
+            
+
+        def voltage_max_txt():
+            global voltage_max
+            voltage_max = simpledialog.askfloat("max value", " set value")
+
+
+        def gps_min_txt():
+            global gps_min
+            gps_min = simpledialog.askfloat("min value", " set value")
+
+        def gps_hdop_max_txt():
+            global gps_hdop_max
+            gps_hdop_max = simpledialog.askfloat("max value", " set value")
+
+        def motor_overlapp_txt():
+            global motor_overalapp
+            motor_overalapp = simpledialog.askfloat("overlapp parameter", "set value")
+
+        def mag_min_txt():
+            global mag_min
+            mag_min = simpledialog.askfloat("min value", " set value")
+
+        def mag_max_txt():
+            global mag_max
+            mag_max = simpledialog.askfloat("max value", " set value")
+
+        def iaz_max_txt():
+            global iaz_max
+            iaz_max = simpledialog.askfloat("max value", " set value")
+
+        def password_input():
+            user_input = simpledialog.askstring("Enter Password", "Password" , show = '*')
+            if user_input != " ":
+                messagebox.showinfo("Exit", "Wrong Password") 
+            if user_input == " ":
+                file_menu.add_cascade(label = " Set Parameters ", menu = param_menu)
+                param_menu.add_cascade(label = " Phi and Desired Phi ", menu = phi_menu)
+                phi_menu.add_command(label = "Min value", command = lambda:phi_min_txt())
+                phi_menu.add_command(label = "Max value", command = lambda:phi_max_txt())
+                phi_menu.add_command(label = "Overlapp parameter", command = lambda:phi_overlapp_txt())
+
+                param_menu.add_cascade(label = " The and Desired The ", menu = the_menu)
+                the_menu.add_command(label = "Min value", command = lambda:the_min_txt())
+                the_menu.add_command(label = "Max value", command = lambda:the_max_txt())
+                the_menu.add_command(label = "Overlapp parameter", command = lambda:the_overlapp_txt())
+                
+                param_menu.add_cascade(label = " Psi and Desired Psi ", menu = psi_menu)
+                psi_menu.add_command(label = "Min value", command = lambda:psi_min_txt())
+                psi_menu.add_command(label = "Max value", command = lambda:psi_max_txt())
+                psi_menu.add_command(label = "Overlapp parameter", command = lambda:psi_overlapp_txt())
+                
+                param_menu.add_cascade(label = " Controller Psi and Psi ", menu = cont_psi_menu)
+                cont_psi_menu.add_command(label = " Max Average Value ", command = lambda:cont_psi_average_txt())
+
+                param_menu.add_cascade(label = " Altitude and desired altitude ", menu = alt_menu)
+                alt_menu.add_command(label = " Overlapp parameter", command = lambda:alt_overlapp_txt())
+
+                param_menu.add_cascade(label = " Max Throttle ", menu = throttle_menu)
+                throttle_menu.add_command(label = " Max throttle ", command = lambda:throttle_max_txt())
+
+                param_menu.add_cascade(label = " Voltage and mid-voltage ", menu = voltage_menu)
+                voltage_menu.add_command(label = " Spike parameter ", command = lambda:voltage_max_txt())
+
+                param_menu.add_cascade(label = " GPS A & B value ", menu = gps_sat_menu)
+                gps_sat_menu.add_command(label = " GPS sat value ", command = lambda:gps_min_txt())
+
+                param_menu.add_cascade(label = " GPS A & B HDOP ", menu =gps_hdop_menu)
+                gps_hdop_menu.add_command(label = " GPS hdop value ", command = lambda:gps_hdop_max_txt())
+
+                param_menu.add_cascade(label = " Motor PWM ", menu = motor_menu)
+                motor_menu.add_command(label = " PWM overlapp ", command = lambda:motor_overlapp_txt())
+
+                param_menu.add_cascade(label = " Mag Field ", menu = mag_menu)
+                mag_menu.add_command(label = " Min mag_field ", command = lambda:mag_min_txt())
+                mag_menu.add_command(label = " Max mag_field", command = lambda:mag_max_txt())
+                
+                param_menu.add_cascade(label = " I Az vibration ", menu = iaz_menu)
+                iaz_menu.add_command(label = " Max I Az vibration value ", command = lambda:iaz_max_txt())
+
+        file_menu = Menu(my_menu, tearoff = False)
+        my_menu.add_cascade(label = " Admin Settings", menu = file_menu)
+        file_menu.add_command(label="Enter Password", command = password_input)
         
         container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand = True)
+        container.pack()
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
@@ -74,7 +253,7 @@ class iFapp(tk.Tk):
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self,parent)
+        tk.Frame.__init__(self, parent)
         self.controller=controller
         canvas1 = tk.Canvas(self, width = 650, height = 520, bg = 'black', relief = 'raised')
         canvas1.pack(side ="top",fill="both",expand="True")
@@ -122,10 +301,11 @@ class StartPage(tk.Frame):
         
         global var, flight_status
         var=dict()
+
         flight_status=['OFF','STARTUP','TAKEOFF','HOVER','LAND']
         
         def my_command1():
-            data = pd.DataFrame(df,columns = [my_combo.get(),my_combo1.get(),'Mode'])
+            data = pd.DataFrame(df,columns = [my_combo.get(),my_combo1.get(),'Mode', 'Wind'])
             #print(type(z))
             temp = " "
             for i in flight_status:
@@ -133,7 +313,8 @@ class StartPage(tk.Frame):
                 if (var[i].get() == 1):
                     temp+=" "+i
             x=str(uav_label).replace('(','').replace(')','').replace('(','').replace(')','').replace(',','').replace(',','')
-            temp="UAV ID:"+" "+x+"  "+"Flight Modes:"+" "+temp
+            temp="UAV ID:"+" "+x+"  "+"Mode:"+""+temp
+            
             option=['1']
             new_data=data.loc[data['Mode'].isin(option)]
 
@@ -145,24 +326,36 @@ class StartPage(tk.Frame):
             
             #new_data.to_csv('sampleText.csv')
 
+            global my_string
+            if (lat_long_var.get() == 1):
+                my_string = "Lat: "+ str(lat_data) +"    "+ " Lon: "+ str(long_data)+"    " +" "+"Max-Wind: "+ str(wind_data)
+            if (lat_long_var.get() != 1):
+                my_string = "Max-Wind: "+ str(wind_data)
+
             pullData = pd.read_csv('sampleText.csv')
             #print(pullData)
             xList = pullData.iloc[:,1]
             yList = pullData.iloc[:,2]
+            zList = pullData.iloc[:,4]
             if (my_combo.get()==my_combo1.get()):
-                plt.plot(yList,'g',label=my_combo.get())
+                plt.plot(yList,'g',label = my_combo.get())
+                if (wind_chk_var.get() == 1):
+                    plt.plot(zList,'b', label = 'wind')
                 plt.title(temp)
             else:
                 plt.plot(xList,'r',label=my_combo.get())
                 plt.plot(yList,'g',label=my_combo1.get())
+                if (wind_chk_var.get() == 1):
+                    plt.plot(zList,'b', label = 'wind')
                 plt.title(temp)
             fig = plt.gcf()
             fig.canvas.set_window_title('Log File Visualizer')
-            plt.xlabel('time')
-            plt.ylabel('value')
+            plt.ylabel(date +"    " +"Flight Num: "+f_num)
+            plt.xlabel(my_string)
             plt.legend(loc='upper left')
             plt.show()
-        
+            del xList,yList
+
         
         style=Style()
 
@@ -201,21 +394,94 @@ class StartPage(tk.Frame):
             import numpy as np
             import_file_path = filedialog.askopenfilename()
             df = pd.read_csv (import_file_path)
-
             # data_col_names=data_col_names.values.tolist()
+            global date 
+            date = import_file_path
+            date = str(date)
+            # Extracting date info from the file_name 
+
+            date_list = []
+            index = 0 
+            count_space = 0 
+            index_space = 0
+
+            for i in range(len(date)):
+                if date[i] == '/':
+                    index = i
+                if date[i] == ' ':
+                    count_space += 1
+                    if count_space == 3:
+                        index_space = i
+    
+            for i in range(index+1,index_space):
+                date_list.append(date[i])
+
+            date = " ".join(date_list)
             
+            #Flight date information extracted 
+
             label5 = tk.Label(self, text=import_file_path , bg='lightblue', fg='black', font=SMALL_FONT)
             canvas1.create_window(320,240, window = label5)
 
+            global lat_data,long_data,wind_data, flight_number
+
+
+            flight_number=np.array(pd.DataFrame(df,columns=['Flight Number']).values.tolist())
             f_status=np.array(pd.DataFrame(df,columns=['Mode']).values.tolist())
+            long_data = np.array(pd.DataFrame(df, columns = ['CBX Lon']).values.tolist())
+            lat_data = np.array(pd.DataFrame(df, columns = ['CBX Lat']).values.tolist())
+            wind_data = np.array(pd.DataFrame(df, columns = ['Wind']).values.tolist())
+
+
+            long_data = np.average(long_data).round(2)
+            lat_data = np.average(lat_data).round(2)
+            wind_data = np.max(wind_data).round(2)
+
+            flight_number = np.unique(flight_number)
+
+            global f_num
+
+            f_num = []
+
+            for i in range(len(flight_number)):
+                if (flight_number[i] != 0):
+                    f_num.append(flight_number[i])
+
+            f_num = str(f_num)
+            print(f_num)
+
+            count = 0
             for i in range(len(f_status)):
                 if (f_status[i] == 'FS_BATT'):
-                    flight_status.append('FS_BATT')
+                    count += 1
+                    my_item = 'FS_BATT'
+                    if (count > 0):
+                        if my_item not in flight_status:
+                            flight_status.append('FS_BATT')
+                    if (count == 0):
+                        if my_item in flight_status:
+                            flight_status.remove('FS_BATT')
+                            break
+
+            #Check Button for Wind, Latitude-Longitude
+
+            global wind_chk_var
+            wind_chk_var = IntVar()
+            wind_chk = tk.Checkbutton(self,text = 'Wind Data on plot', variable = wind_chk_var, width = 15, height = 1)
+            wind_chk.select()
+            canvas1.create_window(500,300, window = wind_chk)
+
+            global lat_long_var
+            lat_long_var = IntVar()
+            lat_long_chk = tk.Checkbutton(self, text = 'Lat Long Value', variable = lat_long_var, width = 15, height = 1)
+            lat_long_chk.select()
+            canvas1.create_window(500,320,window = lat_long_chk)
+
 
             d=300                      #for positioning of checkboxes
             for i in flight_status:
                 var[i]=IntVar()
-                chk=tk.Checkbutton(self,text=i,variable=var[i],width=8, height=1)
+                chk=tk.Checkbutton(self,text = i,variable = var[i],width = 8, height = 1)
                 chk.select()
                 canvas1.create_window(150,d,window=chk)
                 d+=20
@@ -321,6 +587,7 @@ class PageOne(tk.Frame):
             uav_status=np.array(pd.DataFrame(data,columns=['UAV Status']).values.tolist())
             flight_time=(pd.DataFrame(data,columns=['Flight Time']).values.tolist())
 
+            global cont
             cont=[]
 
             #print(type(flight_time))
@@ -337,6 +604,7 @@ class PageOne(tk.Frame):
                         if (flight_time[i] != ['0m 00s']):
                             cont.append(flight_time[i])
 
+            
             cont=np.array(cont)
 
             print(cont)
@@ -372,6 +640,11 @@ class PageOne(tk.Frame):
         canvas2.create_window(325,60,window=button1)
 
 
+        import math
+        def back_start():
+            controller.show_frame(StartPage)
+            for i in range(math.floor(len(cont)/2)):
+                label_dict[i].destroy()
 
         style=Style()
 
@@ -379,7 +652,7 @@ class PageOne(tk.Frame):
                ('calibri', 10, 'bold'),
                 foreground = 'green',background= 'black')
         button1 = ttk.Button(self, text="Back to Home",style='r.TButton',
-                            command=lambda: controller.show_frame(StartPage))
+                            command=lambda: back_start())
         canvas2.create_window(565,480,window=button1)
 
         button2 = ttk.Button(self, text="Log CheckList", style='g.TButton',
@@ -551,7 +824,6 @@ class PageTwo(tk.Frame):
             labela12 = ttk.Label(self, text=" None ", style='g.TButton')
             canvas3.create_window(565,300, window=labela12)
 
-
             '''
             def batt_command():
             import numpy as np
@@ -560,14 +832,14 @@ class PageTwo(tk.Frame):
             print(d)
             '''
 
-            temp_phi=0
+            temp_phi = 0
 
             for i in range(len(desired_phi)):
                 temp_phi+=(phi[i]-desired_phi[i])**2/len(desired_phi)
             temp_phi=np.sqrt(temp_phi)
             
 
-            if (temp_phi>5):
+            if (temp_phi> phi_overlapp):
                 labela0['text']= "FAIL"
                 labela0['style']='r.TButton'
             else:
@@ -581,7 +853,7 @@ class PageTwo(tk.Frame):
             temp_the=np.sqrt(temp_the)
             
 
-            if (temp_the>5):
+            if (temp_the > the_overlapp):
                 labela1['text']= "FAIL"
                 labela1['style']='r.TButton'
             else:
@@ -594,7 +866,7 @@ class PageTwo(tk.Frame):
                 temp_psi += (psi[i]-desired_psi[i])**2/len(desired_psi)
             temp_psi = np.sqrt(temp_psi)
 
-            if (temp_psi>10):
+            if (temp_psi > psi_overlapp):
                 labela2['text'] = "FAIL"
                 labela2['style'] = 'r.TButton'
             else:
@@ -604,7 +876,7 @@ class PageTwo(tk.Frame):
             temp_yaw = 0
             temp_yaw=np.mean(controller_psi)
             
-            if (np.abs(temp_yaw) < 100 ):
+            if (np.abs(temp_yaw) < cont_psi_average):
                 if (np.abs(np.mean(psi)) < 100):
                     labela3['text'] = "PASS"
                     labela3['style'] = 'g.TButton'
@@ -621,7 +893,7 @@ class PageTwo(tk.Frame):
                 temp_alt += (desired_altitude[i]-altitude[i])**2/len(altitude)
             temp_alt=np.sqrt(temp_alt)
 
-            if (temp_alt>10):
+            if (temp_alt > alt_overlapp):
                 labela4['text'] = " FAIL "
                 labela4['style'] = 'r.TButton'
                 
@@ -629,7 +901,7 @@ class PageTwo(tk.Frame):
                 labela4['text'] = " PASS "
                 labela4['style'] = 'g.TButton'
 
-            if (np.max(throttle)>90):
+            if (np.max(throttle)> throttle_max):
                 labela5['text'] = "FAIL"
                 labela5['style'] = 'r.TButton'
 
@@ -639,10 +911,17 @@ class PageTwo(tk.Frame):
 
             temp_volt = 0
 
+            voltage = np.delete(voltage,[0,1,2,3,4,5,6,7,8])
             for i in range(len(voltage)-1):
-                if (np.abs(voltage[i+1]-voltage[i])>100*np.abs((np.min(voltage)-np.max(voltage))/len(voltage))):
-                    temp_volt += 1 
+                print(np.abs(voltage[i+1]) - np.abs(voltage[i]))
+                if ((np.abs(voltage[i+1])-np.abs(voltage[i])) > voltage_max*np.abs((np.max(voltage)-np.min(voltage))/len(voltage))):
+                    temp_volt += 1
+                if ((np.abs(voltage[i+1])-np.abs(voltage[i])) < voltage_max*np.abs((np.max(voltage)-np.min(voltage))/len(voltage))):
+                    temp_volt -= 1
+                    
             
+            print(voltage_max*(np.max(voltage)-np.min(voltage))/len(voltage))
+
             
             if (temp_volt > 1):
                 labela6['text'] = "FAIL"
@@ -652,51 +931,51 @@ class PageTwo(tk.Frame):
                 labela6['text'] = "    PASS    "
                 labela6['style'] = 'g.TButton'
 
-            if (np.min(g1_sat) < 10):
+            if (np.min(g1_sat) < gps_min):
                 labela7['text'] = "GPS A Loss"
                 labela7['style'] = 'r.TButton'
-                if (np.min(g2_sat) < 10):
+                if (np.min(g2_sat) < gps_min):
                     labela7['text'] = "Both Loss"
                     labela7['style'] = 'r.TButton'
             
-            if (np.min(g2_sat) < 10):
+            if (np.min(g2_sat) < gps_min):
                 labela7['text'] = "GPS B Loss"
                 labela7['style'] = 'r.TButton'
-                if (np.min(g1_sat) < 10):
+                if (np.min(g1_sat) < gps_min):
                     labela7['text'] = "Both Loss"
                     labela7['style'] = 'r.TButton'
             else:
                 labela7['text'] = "    PASS    "
                 labela7['style'] = 'g.TButton'
 
-            if (np.max(g1_hdop) > 1):
+            if (np.max(g1_hdop) > gps_hdop_max):
                 labela8['text'] = "GPS A Loss"
                 labela8['style'] = 'r.TButton'
-                if (np.max(g2_hdop) > 1):
+                if (np.max(g2_hdop) > gps_hdop_max):
                     labela8['text'] = "Both Loss"
                     labela8['style'] = 'r.TButton'
 
-            if (np.max(g2_hdop) > 1):
+            if (np.max(g2_hdop) > gps_hdop_max):
                 labela8['text'] = "GPS B Loss"
                 labela8['style'] = 'r.TButton'
-                if (np.max(g2_hdop) > 1):
+                if (np.max(g2_hdop) > gps_hdop_max):
                     labela8['text'] = "Both Loss"
                     labela8['style'] = 'r.TButton'
             else:
                 labela8['text'] = "    PASS    "
                 labela8['style'] = 'g.TButton'
 
-            if (np.max(g2_hdop) >= 180):
+            if (np.max(g2_hdop) >= 180*gps_hdop_max):
                 labela8['text'] = "GPS B FAIL"
                 labela8['style'] = 'r.TButton'
-                if (np.max(g1_hdop) >= 180):
+                if (np.max(g1_hdop) >= 180*gps_hdop_max):
                     labela8['text'] = "Both FAIL"
                     labela8['style'] = 'r.TButton'
 
-            if (np.max(g1_hdop) >= 180):
-                labela8['text'] = "GPS A Loss"
+            if (np.max(g1_hdop) >= 180*gps_hdop_max):
+                labela8['text'] = "GPS A FAIL"
                 labela8['style'] = 'r.TButton'
-                if (np.max(g2_hdop) >= 180):
+                if (np.max(g2_hdop) >= 180*gps_hdop_max):
                     labela8['text'] = "Both FAIL"
                     labela8['style'] = 'r.TButton'
  
@@ -706,14 +985,14 @@ class PageTwo(tk.Frame):
                 temp_mag += mag_field[i]**2/len(mag_field)
             temp_mag=np.sqrt(temp_mag)
 
-            if (temp_mag < 100):
-                if (temp_mag > 0):
+            if (temp_mag < mag_max):
+                if (temp_mag > mag_min):
                     labela10['text'] = "PASS"
                     labela10['style'] = 'g.TButton'
                 else:
                     labela10['text'] = "FAIL"
                     labela10['style'] = 'r.TButton'
-                    print(temp_mag)
+                    
             else:
                 labela10['text'] = "FAIL"
                 labela10['style'] = 'r.TButton'
@@ -724,7 +1003,8 @@ class PageTwo(tk.Frame):
                 temp_z += i_az[i]**2/len(i_az)
             temp_z=np.sqrt(temp_z)
 
-            if (temp_z < 5):
+
+            if (temp_z < iaz_max):
                 labela11['text'] = "PASS"
                 labela11['style'] = 'g.TButton'
 
@@ -732,17 +1012,19 @@ class PageTwo(tk.Frame):
                 labela11['text'] = "FAIL"
                 labela11['style'] = 'r.TButton'
 
-            batt=0
+            batt = str(0)
+
+
             for i in range(len(mode)):
-                if (mode[i] == 'FS_BATT'):
-                    batt=(flight_time[i])
+                if (mode[i] == "FS_BATT"):
+                    batt = (flight_time[i])
+                    break
 
             batt=np.array_str(batt)
-            
-            labela12['text']=batt.replace('[',' ').replace(']',' ')
-            print(type(batt))
-            labela12['style'] = 'r.TButton'
 
+            labela12['text']=batt.replace('[',' ').replace(']',' ')
+            print(batt)
+            labela12['style'] = 'r.TButton'
 
 
         button= ttk.Button(self, text="Basic Flight Checks",style='r.TButton',
@@ -781,7 +1063,8 @@ class PageThree(tk.Frame):
 
         def my_command():
             canvas.get_tk_widget().pack_forget()
-
+        
+        
         '''
         canvas = FigureCanvasTkAgg(f, self)
         canvas.draw()
@@ -792,6 +1075,7 @@ class PageThree(tk.Frame):
         toolbar.update()
         canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         '''
+
 
 app = iFapp()
 #ani = animation.FuncAnimation(f, animate, interval=1000)
